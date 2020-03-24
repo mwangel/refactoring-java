@@ -25,7 +25,7 @@ public class RentalInfo {
       }
 
       // Determine amount for each movie.
-      BigDecimal price = calculatePrice( movie, rentalInfo );
+      BigDecimal price = getPricing( movie ).getCost( rentalInfo.getDays() );
       totalAmount = totalAmount.add( price );
 
       // Add frequent bonus points. Consider putting this in a "isEligbleForExtraBonus(MovieRental info)" method or something.
@@ -47,8 +47,10 @@ public class RentalInfo {
 
   // If you really do this you could have failed already because the report might not reflect the actual price...
   private String formatAmount( BigDecimal amount ) {
+    // The formatter will really be picked up from some utility class or DB but for this exercise we'll create it here:
     final DecimalFormat formatter = new DecimalFormat("#.0");
     formatter.setDecimalFormatSymbols( DecimalFormatSymbols.getInstance(Locale.US) );
+
     return formatter.format( amount );
   }
 
@@ -88,14 +90,5 @@ public class RentalInfo {
    */
   private Movie getMovie( String id ) {
     return getMovies().get( id );
-  }
-
-  /**
-   * Given a Movie and a piece of MovieRental data, return the price that the customer should pay.
-   * @return The price for renting the movie based on the sales data.
-   * @throws NullPointerException if pricing info is not found for the movie.
-   */
-  private BigDecimal calculatePrice( Movie movie, MovieRental rentalInfo ) {
-    return getPricing( movie ).getCost( rentalInfo.getDays() );
   }
 }
